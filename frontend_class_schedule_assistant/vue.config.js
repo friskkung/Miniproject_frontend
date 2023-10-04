@@ -8,7 +8,7 @@ module.exports = defineConfig({
   pluginOptions: {
     vuetify: {
       theme: {
-        dark: false, // or true if you want a dark theme
+        dark: true, // or true if you want a dark theme
       },
     },
   },
