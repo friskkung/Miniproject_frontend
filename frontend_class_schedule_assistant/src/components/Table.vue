@@ -21,16 +21,13 @@
         </v-col>
         <!-- Time slots for each day -->
         <v-col
-          v-for="timeSlot in timeSlots"
-          :key="timeSlot"
+          v-for="newtimeSlot in newtimeSlots"
+          :key="newtimeSlot"
           class="time-slot-col"
           cols="1"
         >
-          <!-- Display timetable information here for the specific day and time slot -->
-          <div v-if="timetableEntryExists(day.day, timeSlot)">
-            {{ getTimetableEntry(day.day, timeSlot).subject }}
-            <br />
-            {{ getTimetableEntry(day.day, timeSlot).location }}
+          <div v-if="timetableEntryExists(day.day, newtimeSlot)">
+            {{ getTmpCode(day.day, newtimeSlot) }}
           </div>
         </v-col>
       </v-row>
@@ -55,64 +52,105 @@ export default {
         "15.00-16.00",
         "16.00-17.00",
         "17.00-18.00",
-        "18.00-19.00"
+        "18.00-19.00",
+      ],
+      newtimeSlots: [
+        "08.00-09.00",
+        "09.00-10.00",
+        "10.00-11.00",
+        "11.00-12.00",
+        "12.00-13.00",
+        "13.00-14.00",
+        "14.00-15.00",
+        "15.00-16.00",
+        "16.00-17.00",
+        "17.00-18.00",
+        "18.00-19.00",
       ],
       timetable: [
         {
-          day: "Mon",
-          entries: {
-            "08.00-09.00": { subject: "Math", location: "Room 101" },
-            "11.00-12.00": { subject: "History", location: "Room 202" },
-          },
+          day: "MON",
         },
         {
-          day: "Tue",
-          entries: {
-            "09.00-10.00": { subject: "Science", location: "Room 103" },
-          },
+          day: "TUE",
         },
         {
-          day: "Wed",
-          entries: {
-            "09.00-10.00": { subject: "Science", location: "Room 103" },
-          },
+          day: "WED",
         },
         {
-          day: "Thu",
-          entries: {
-            "09.00-10.00": { subject: "Science", location: "Room 103" },
-          },
+          day: "THU",
         },
         {
-          day: "Fri",
-          entries: {
-            "09.00-10.00": { subject: "Science", location: "Room 103" },
-          },
+          day: "FRI",
         },
         {
-          day: "Sat",
-          entries: {
-            "09.00-10.00": { subject: "Science", location: "Room 103" },
-          },
+          day: "SAT",
         },
         {
-          day: "Sun",
-          entries: {
-            "09.00-10.00": { subject: "Science", location: "Room 103" },
-          },
-        }
+          day: "SUN",
+        },
         // Add more days and timetable entries here
       ],
+      courses: [],
+      tmpCode: "",
+      testCourse: [
+        {
+          courseId: 1,
+          code: "000-000",
+          courseName: "courseName",
+          credit: "1.0",
+          day: "Mon",
+          time: "13.00-14.00",
+        },
+      ],
+      RecieveSelectedCourse: null,
     };
+  },
+  created() {
+    this.getSelectedCourse();
+    this.prepareData();
   },
   methods: {
     timetableEntryExists(day, timeSlot) {
-      const dayEntry = this.timetable.find((entry) => entry.day === day);
-      return dayEntry && dayEntry.entries[timeSlot];
+      for (const course of this.courses) {
+        if (course.day == day && course.time == timeSlot) {
+          return true;
+        }
+      }
+      return false;
     },
-    getTimetableEntry(day, timeSlot) {
-      const dayEntry = this.timetable.find((entry) => entry.day === day);
-      return dayEntry ? dayEntry.entries[timeSlot] : {};
+    getTmpCode(day, timeSlot) {
+      const course = this.courses.find(
+        (course) => course.day === day && course.time === timeSlot
+      );
+      console.log("getTmpCode Course===>",course)
+      return course ? course.code : "";
+    },
+
+    getSelectedCourse() {
+      if (localStorage.getItem("selectedCourse") != null) {
+        this.RecieveSelectedCourse = JSON.parse(
+          localStorage.getItem("selectedCourse")
+        );
+        var tmp = localStorage.getItem("selectedCourse");
+        // console.log("Receive Coursed ===>", this.RecieveSelectedCourse);
+        var day = this.RecieveSelectedCourse[0].sections[0].days[0].dayName;
+        // console.log("this is day name===>", day);
+      }
+    },
+    prepareData() {
+      this.RecieveSelectedCourse.forEach((course) => {
+        // console.log("course==>", course);
+        this.courses.push({
+          courseId: course.courseId,
+          code: course.code,
+          courseName: course.courseName,
+          credit: course.credit,
+          day: course.sections[0].days[0].dayName,
+          time: course.sections[0].days[0].classes[0].classTime,
+        });
+        console.log("this is course", this.courses);
+      });
     },
   },
 };
