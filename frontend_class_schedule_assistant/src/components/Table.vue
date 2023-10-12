@@ -1,38 +1,44 @@
 <template>
-  <v-card>
-    <v-card-title> Student Timetable </v-card-title>
-    <v-card-text>
-      <v-row>
-        <!-- Header row with time slots -->
-        <v-col
-          class="header-col"
-          cols="1"
-          v-for="timeSlot in timeSlots"
-          :key="timeSlot"
-        >
-          {{ timeSlot }}
-        </v-col>
-      </v-row>
-      <!-- Timetable grid -->
-      <v-row v-for="day in timetable" :key="day.day">
-        <!-- Day column -->
-        <v-col class="day-col" cols="1">
-          {{ day.day }}
-        </v-col>
-        <!-- Time slots for each day -->
-        <v-col
-          v-for="newtimeSlot in newtimeSlots"
-          :key="newtimeSlot"
-          class="time-slot-col"
-          cols="1"
-        >
-          <div v-if="timetableEntryExists(day.day, newtimeSlot)">
-            {{ getTmpCode(day.day, newtimeSlot) }}
-          </div>
-        </v-col>
-      </v-row>
-    </v-card-text>
-  </v-card>
+  <div>
+    <v-card>
+      <v-card-title> Student Timetable </v-card-title>
+      <v-card-text>
+        <v-row >
+          <!-- Header row with time slots -->
+          <v-col
+            class="header-col"
+            cols="1"
+            v-for="timeSlot in timeSlots"
+            :key="timeSlot"
+          >
+            {{ timeSlot }}
+          </v-col>
+        </v-row>
+        <!-- Timetable grid -->
+        <v-row v-for="day in timetable" :key="day.day">
+          <!-- Day column -->
+          <v-col class="day-col" cols="1">
+            {{ day.day }}
+          </v-col>
+          <!-- Time slots for each day -->
+          <v-col
+            v-for="newtimeSlot in newtimeSlots"
+            :key="newtimeSlot"
+            class="time-slot-col"
+            cols="1"
+          >
+            <div v-if="timetableEntryExists(day.day, newtimeSlot)">
+              {{ getTmpCode(day.day, newtimeSlot) }}
+            </div>
+          </v-col>
+        </v-row>
+      </v-card-text> </v-card
+    ><br />
+    <label>This is all your seleted courses</label><br /><br />
+    <v-chip v-for="course in courses" :key="course.code">{{
+      course.code
+    }}</v-chip>
+  </div>
 </template>
   
   <script>
@@ -123,7 +129,7 @@ export default {
       const course = this.courses.find(
         (course) => course.day === day && course.time === timeSlot
       );
-      console.log("getTmpCode Course===>",course)
+      console.log("getTmpCode Course===>", course);
       return course ? course.code : "";
     },
 

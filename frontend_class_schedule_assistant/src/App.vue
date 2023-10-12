@@ -5,6 +5,7 @@
       color="primary"
       dark
     >
+    <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <!-- Logo -->
       <div class="d-flex align-center">
        <h1>CSA</h1>
@@ -16,11 +17,14 @@
         
         text
       >
-        <span class="mr-2">Login</span>
+        <span class="mr-2" @click="toStaffMenu()">Staff</span>
       </v-btn>
     </v-app-bar>
     <!-- Navigation Drawer -->
-    <v-navigation-drawer app mini-variant>
+    <v-navigation-drawer v-model="drawer"
+      absolute
+      bottom
+      temporary >
       <!-- Your navigation links go here -->
       <v-list>
         <v-list-item link to="/">
@@ -56,7 +60,17 @@ export default {
   name: 'App',
 
   data: () => ({
-    //
-  })
+    drawer: false,
+  }),
+  methods:{
+    toStaffMenu(){
+      this.$router.push('/login')
+    },
+  },
+  watch: {
+      group () {
+        this.drawer = false
+      },
+    },
 }
 </script>

@@ -11,7 +11,7 @@
           label="Search"
           single-line
           hide-details
-        ></v-text-field>
+        ></v-text-field><v-spacer></v-spacer>
         <v-btn color="primary" dark class="mb-2" @click="saveSelected()">
           Save selected courses
         </v-btn>
@@ -48,21 +48,33 @@ export default {
         {
           text: "ไอดี",
           align: "start",
-          sortable: false,
+          sortable: true, // อนุญาตให้เรียงลำดับคอลัมน์นี้
           value: "courseId",
         },
-        { text: "code", value: "code" },
-        { text: "course name", value: "CourseName" },
-        { text: "credit", value: "credit" },
-        { text: "selected", value: "selected" },
+        {
+          text: "code",
+          sortable: true,
+          value: "code",
+        },
+        {
+          text: "course name",
+          sortable: true,
+          value: "courseName", // แก้ไขตรงนี้จาก 'CourseName' เป็น 'courseName'
+        },
+        {
+          text: "credit",
+          sortable: true,
+          value: "credit",
+        },
+        {
+          text: "selected",
+          sortable: false, // ไม่สามารถเรียงลำดับได้
+          value: "selected",
+        },
       ],
-      selectedCourseId: "",
-      selectedCourseCode: "",
-      selectedCourseName: "",
-      selectedCourseCredit: "",
       search: "",
-    };
-  },
+      };
+    },
   created() {
     this.initialize();
     this.clearLocalStorage();
@@ -80,7 +92,7 @@ export default {
       }
     },
     openDialog(action, item) {
-      // Implement your dialog logic here
+      // ระบบลอจิกของคุณ
     },
     selectedCourses(item, selected) {
       console.log("Item pass by==>", item);
@@ -93,7 +105,7 @@ export default {
         }
       } else {
         if (item != null) {
-          this.selectedCourse.pop(item);
+          this.selectedCourse.splice(this.selectedCourse.indexOf(item), 1); // แก้ไขการลบข้อมูล
           console.log("Current Selected Course===>", this.selectedCourse);
         } else {
           console.log("item is null!");
@@ -119,26 +131,22 @@ export default {
   },
   computed: {
     filteredItems() {
-      if (!this.search) return this.courseItem; // Return all items if search is empty
+      if (!this.search) return this.courseItem; // คืนค่ารายการทั้งหมดหากไม่มีการค้นหา
 
       const keyword = this.search.toLowerCase();
       return this.courseItem.filter((item) => {
-        var courseId = JSON.stringify(item.courseId)
-        var code =JSON.stringify(item.code)
-        var courseName=JSON.stringify(item.courseName)
-        var credit=JSON.stringify(item.credit)
-        // Adjust the properties you want to search through here
         return (
-          courseId.toLowerCase().includes(keyword) ||
-          code.toLowerCase().includes(keyword) ||
-          courseName.toLowerCase().includes(keyword) ||
-          credit.toString().includes(keyword)
+          item.courseId.toString().toLowerCase().includes(keyword) ||
+          item.code.toString().toLowerCase().includes(keyword) ||
+          item.courseName.toLowerCase().includes(keyword) ||
+          item.credit.toString().includes(keyword)
         );
       });
     },
   },
 };
 </script>
+
 
 <style>
 </style>
