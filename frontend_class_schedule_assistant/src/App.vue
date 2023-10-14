@@ -1,76 +1,27 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-    <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <!-- Logo -->
-      <div class="d-flex align-center">
-       <h1>CSA</h1>
-      </div>
-
-      <v-spacer></v-spacer>
-      <!-- Latest-release -->
-      <v-btn
-        
-        text
-      >
-        <span class="mr-2" @click="toStaffMenu()">Staff</span>
-      </v-btn>
-    </v-app-bar>
-    <!-- Navigation Drawer -->
-    <v-navigation-drawer v-model="drawer"
-      absolute
-      bottom
-      temporary >
-      <!-- Your navigation links go here -->
-      <v-list>
-        <v-list-item link to="/">
-          <v-list-item-icon>
-            <v-icon>mdi-home</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>Home</v-list-item-title>
-        </v-list-item>
-        <v-list-item link to="/course">
-          <v-list-item-icon>
-            <v-icon>mdi-book</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>Course</v-list-item-title>
-        </v-list-item>
-        <v-list-item link to="/table">
-          <v-list-item-icon>
-            <v-icon>mdi-table</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>Timetable</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-
     <v-main>
-      <router-view/>
+      <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script>
-
 export default {
-  name: 'App',
-
+  name: "App",
   data: () => ({
     drawer: false,
   }),
-  methods:{
-    toStaffMenu(){
-      this.$router.push('/login')
-    },
+  methods: {
   },
   watch: {
-      group () {
-        this.drawer = false
-      },
+    group() {
+      this.drawer = false;
     },
-}
+  },
+  created(){
+    localStorage.setItem('userId',0)
+    localStorage.setItem('stayLogin',false)
+  },
+};
 </script>

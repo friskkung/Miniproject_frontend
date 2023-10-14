@@ -1,40 +1,78 @@
 <template>
-  <v-data-table :headers="headers" :items="filteredItems" class="elevation-1">
-    <template v-slot:top>
-      <v-toolbar flat>
-        <v-toolbar-title>ข้อมูลรายวิชา</v-toolbar-title>
-        <v-divider class="mx-4" inset vertical></v-divider>
-        <v-spacer></v-spacer>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          single-line
-          hide-details
-        ></v-text-field><v-spacer></v-spacer>
-        <v-btn color="primary" dark class="mb-2" @click="saveSelected()">
-          Save selected courses
-        </v-btn>
-      </v-toolbar>
-    </template>
-    <template v-slot:item="{ item }">
-      <tr>
-        <td>{{ item.courseId }}</td>
-        <td>{{ item.code }}</td>
-        <td>{{ item.courseName }}</td>
-        <td>{{ item.credit }}</td>
-        <td>
-          <v-checkbox
-            v-model="item.selected"
-            @click="selectedCourses(item, item.selected)"
-          ></v-checkbox>
-        </td>
-      </tr>
-    </template>
-    <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize"> Reset </v-btn>
-    </template>
-  </v-data-table>
+  <div>
+    <v-app-bar app color="primary" dark>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <!-- Logo -->
+      <div class="d-flex align-center">
+        <h1>CSA</h1>
+      </div>
+      <v-spacer></v-spacer>
+      <!-- Latest-release -->
+      <v-btn text @click="toStaffMenu">
+        <span class="mr-2">{{ stateUser }}</span>
+      </v-btn>
+    </v-app-bar>
+    <v-data-table :headers="headers" :items="filteredItems" class="elevation-1">
+      <template v-slot:top>
+        <v-toolbar flat>
+          <v-toolbar-title>ข้อมูลรายวิชา</v-toolbar-title>
+          <v-divider class="mx-4" inset vertical></v-divider>
+          <v-spacer></v-spacer>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Search"
+            single-line
+            hide-details
+          ></v-text-field
+          ><v-spacer></v-spacer>
+          <v-btn color="primary" dark class="mb-2" @click="saveSelected()">
+            Save selected courses
+          </v-btn>
+        </v-toolbar>
+      </template>
+      <template v-slot:item="{ item }">
+        <tr>
+          <td>{{ item.courseId }}</td>
+          <td>{{ item.code }}</td>
+          <td>{{ item.courseName }}</td>
+          <td>{{ item.credit }}</td>
+          <td>
+            <v-checkbox
+              v-model="item.selected"
+              @click="selectedCourses(item, item.selected)"
+            ></v-checkbox>
+          </td>
+        </tr>
+      </template>
+      <template v-slot:no-data>
+        <v-btn color="primary" @click="initialize"> Reset </v-btn>
+      </template>
+    </v-data-table>
+    <v-navigation-drawer v-model="drawer" absolute bottom temporary>
+      <!-- Your navigation links go here -->
+      <v-list>
+        <v-list-item link to="/">
+          <v-list-item-icon>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Home</v-list-item-title>
+        </v-list-item>
+        <v-list-item link to="/course">
+          <v-list-item-icon>
+            <v-icon>mdi-book</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Course</v-list-item-title>
+        </v-list-item>
+        <v-list-item link to="/table">
+          <v-list-item-icon>
+            <v-icon>mdi-table</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Timetable</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+  </div>
 </template>
 
 <script>
@@ -42,6 +80,9 @@ export default {
   name: "course",
   data() {
     return {
+      drawer: false,
+      stayLogin: false,
+      stateUser: "staff",
       courseItem: [],
       selectedCourse: [],
       headers: [
@@ -73,13 +114,27 @@ export default {
         },
       ],
       search: "",
-      };
-    },
+    };
+  },
   created() {
     this.initialize();
     this.clearLocalStorage();
   },
+  watch: {
+    group() {
+      this.drawer = false;
+    },
+  },
   methods: {
+    toStaffMenu() {
+      if (this.stayLogin) {
+        this.$router.push("/login");
+        localStorage.setItem("userId", 0);
+        localStorage.setItem("stayLogin", false);
+      } else {
+        this.$router.push("/login");
+      }
+    },
     async initialize() {
       this.courseItem = [];
       try {

@@ -1,9 +1,44 @@
 <template>
   <div>
+    <v-app-bar app color="primary" dark>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <!-- Logo -->
+      <div class="d-flex align-center">
+        <h1>CSA</h1>
+      </div>
+      <v-spacer></v-spacer>
+      <!-- Latest-release -->
+      <v-btn text @click="toStaffMenu">
+        <span class="mr-2">{{ stateUser }}</span>
+      </v-btn>
+    </v-app-bar>
+    <v-navigation-drawer v-model="drawer" absolute bottom temporary>
+      <!-- Your navigation links go here -->
+      <v-list>
+        <v-list-item link to="/">
+          <v-list-item-icon>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Home</v-list-item-title>
+        </v-list-item>
+        <v-list-item link to="/course">
+          <v-list-item-icon>
+            <v-icon>mdi-book</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Course</v-list-item-title>
+        </v-list-item>
+        <v-list-item link to="/table">
+          <v-list-item-icon>
+            <v-icon>mdi-table</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Timetable</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
     <v-card>
       <v-card-title> Student Timetable </v-card-title>
       <v-card-text>
-        <v-row >
+        <v-row>
           <!-- Header row with time slots -->
           <v-col
             class="header-col"
@@ -46,6 +81,7 @@ export default {
   name: "Table",
   data() {
     return {
+      drawer: false,
       timeSlots: [
         "Day/Time ",
         "08.00-09.00",
@@ -110,13 +146,35 @@ export default {
         },
       ],
       RecieveSelectedCourse: null,
+      stayLogin: false,
+      stateUser: "staff",
     };
   },
   created() {
     this.getSelectedCourse();
     this.prepareData();
+    this.initialize();
+  },
+  watch: {
+    group() {
+      this.drawer = false;
+    },
   },
   methods: {
+    initialize(){
+      if (localStorage.getItem('stayLogin')==true) {
+        this.stateUser = "Log OUt";
+      }
+    },
+    toStaffMenu() {
+      if (this.stayLogin) {
+        this.$router.push("/login");
+        localStorage.setItem("userId", 0);
+        localStorage.setItem("stayLogin", false);
+      } else {
+        this.$router.push("/login");
+      }
+    },
     timetableEntryExists(day, timeSlot) {
       for (const course of this.courses) {
         if (course.day == day && course.time == timeSlot) {
@@ -145,7 +203,8 @@ export default {
       }
     },
     prepareData() {
-      this.RecieveSelectedCourse.forEach((course) => {
+      if(this.RecieveSelectedCourse!=null){
+        this.RecieveSelectedCourse.forEach((course) => {
         // console.log("course==>", course);
         this.courses.push({
           courseId: course.courseId,
@@ -157,6 +216,8 @@ export default {
         });
         console.log("this is course", this.courses);
       });
+      }
+      
     },
   },
 };
