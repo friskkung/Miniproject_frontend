@@ -37,6 +37,8 @@
           <td>{{ item.code }}</td>
           <td>{{ item.courseName }}</td>
           <td>{{ item.credit }}</td>
+          <td>{{ item.sections[0].days[0].dayName }}</td>
+          <td>{{ item.sections[0].days[0].classes[0].classTime }}</td>
           <td>
             <v-checkbox
               v-model="item.selected"
